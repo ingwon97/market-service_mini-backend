@@ -1,11 +1,14 @@
 package com.example.carrot.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity
+@Entity @Setter
 @Getter
+@NoArgsConstructor
 public class Member {
 
     @Id
@@ -22,4 +25,10 @@ public class Member {
     private String password;
 
     private String profile;
+
+    public Member(String nickname, String username, String password) {
+        this.nickname = nickname;
+        this.username = username;
+        this.password = password;
+    }
 }

@@ -48,7 +48,8 @@ public class PostService {
     @Transactional
     public ResponseDto<?> createPost(MultipartFile image, PostRequestDto requestDto) throws IOException {
 
-        // Member member = new Member();
+        // 임시 데이터 추가
+         Member member = new Member();
         // 멤버를 가지고, 게시글 만들기
         String imageUrl = s3UploaderService.upload(image, "static");
 
