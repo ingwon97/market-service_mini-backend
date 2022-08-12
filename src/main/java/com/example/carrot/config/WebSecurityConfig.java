@@ -30,6 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // 회원 관리 처리 API (POST /user/**) 에 대해 CSRF 무시
         http.csrf()
                 .ignoringAntMatchers("/api/members/**");
+//        http.csrf().disable();
 
         http.authorizeRequests()
                 // image 폴더를 login 없이 허용
@@ -44,12 +45,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 로그인 기능
                 .formLogin()
                 .loginPage("/api/members/login")
+                // 로그인 처리 (POST /user/login)
+                .loginProcessingUrl("/api/members/login")
                 .defaultSuccessUrl("/")
                 .failureUrl("/api/members/login?error")
                 .permitAll()
                 .and()
                 // 로그아웃 기능
                 .logout()
+                .logoutUrl("/api/members/logout")
                 .permitAll();
     }
 }
