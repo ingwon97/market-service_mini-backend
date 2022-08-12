@@ -3,7 +3,10 @@ package com.example.carrot.controller;
 import com.example.carrot.request.PostRequestDto;
 import com.example.carrot.response.ResponseDto;
 import com.example.carrot.service.PostService;
+import com.example.carrot.service.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,15 +25,20 @@ public class PostController {
 
     @PostMapping("/api/posts")
     public ResponseDto<?> createPost(@RequestParam("image")MultipartFile image,
-                                     @RequestParam("dto") PostRequestDto requestDto) throws IOException {
-        return postService.createPost(image, requestDto);
+                                     @RequestParam("dto") PostRequestDto requestDto,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails
+                                     ) throws IOException {
+        Long memberId = userDetails.getMember().getId();
+        return postService.createPost(memberId, image, requestDto);
     }
 
+    // 게시글 조회
     @GetMapping("/api/posts")
     public ResponseDto<?> getAllPosts() {
         return postService.getAllPosts();
     }
 
+    // 게시글 수정
     @PutMapping("/api/posts/{postId}")
     public ResponseDto<?> updatePost(@PathVariable Long id,
                                      @RequestParam("image") MultipartFile image,

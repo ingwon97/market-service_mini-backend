@@ -4,6 +4,7 @@ import com.example.carrot.image.S3UploaderService;
 import com.example.carrot.model.Bookmark;
 import com.example.carrot.model.Member;
 import com.example.carrot.model.Post;
+import com.example.carrot.repository.MemberRepository;
 import com.example.carrot.repository.PostRepository;
 import com.example.carrot.request.PostRequestDto;
 import com.example.carrot.response.PostResponseDto;
@@ -25,6 +26,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final S3UploaderService s3UploaderService;
+    private final MemberRepository memberRepository;
 
     public ResponseDto<?> getPostById(Long postId) {
         Post post = isPresentPost(postId);
@@ -46,11 +48,11 @@ public class PostService {
 
 
     @Transactional
-    public ResponseDto<?> createPost(MultipartFile image, PostRequestDto requestDto) throws IOException {
+    public ResponseDto<?> createPost(Long memberId, MultipartFile image, PostRequestDto requestDto) throws IOException {
 
-        // 임시 데이터 추가
-         Member member = new Member();
+
         // 멤버를 가지고, 게시글 만들기
+        Member member = memberRepository.findById(memberId).get();
         String imageUrl = s3UploaderService.upload(image, "static");
 
         List<Bookmark> categories = requestDto.getCategory();
