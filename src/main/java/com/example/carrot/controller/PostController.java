@@ -1,10 +1,66 @@
 package com.example.carrot.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.carrot.request.PostRequestDto;
+import com.example.carrot.response.ResponseDto;
+import com.example.carrot.service.PostService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
+@RequiredArgsConstructor
 public class PostController {
 
+    private final PostService postService;
+
+    @GetMapping("/api/posts/{postId}")
+    public ResponseDto<?> getPostById(@PathVariable Long postId) {
+        return postService.getPostById(postId);
+    }
+
+    @PostMapping("/api/posts")
+    public ResponseDto<?> createPost(@RequestParam("image")MultipartFile image,
+                                     @RequestParam("dto") PostRequestDto requestDto) throws IOException {
+        return postService.createPost(image, requestDto);
+    }
+
+    @GetMapping("/api/posts")
+    public ResponseDto<?> getAllPosts() {
+        return postService.getAllPosts();
+    }
+
+    @PutMapping("/api/posts/{postId}")
+    public ResponseDto<?> updatePost(@PathVariable Long id,
+                                     @RequestParam("image") MultipartFile image,
+                                     @RequestParam("dto") PostRequestDto requestDto) throws IOException {
+        //이미지가 들어왔다면
+        if (image.isEmpty()) {
+            return postService.updatePost(id, requestDto);
+        }
+        //이미지가 없다면
+        return postService.updatePost(id, image, requestDto);
+    }
+
+    @DeleteMapping("/api/posts/{postId}")
+    public ResponseDto<?> deletePost(@PathVariable Long id) {
+        return postService.deletePost(id);
+    }
+
+    @GetMapping("/api/posts/search")
+    public void searchPost(@RequestParam String title) {
+        postService.searchPost(title);
+    }
+
+    /*@GetMapping("/api/posts/category")
+    public ResponseDto<?> getPostsByCategory() {
+        return postService.getPostsByCategory();
+    }
+
+    @PostMapping("/api/posts/category")
+    public ResponseDto<?> addPostCategory() {
+        return postService.addPostCategory();
+    }*/
 
 }
