@@ -30,7 +30,7 @@ public class CommentController {
         return commentService.updateComment(commentId, details, content);
     }
 
-    @PutMapping("/api/comments/{commentId}")
+    @DeleteMapping("/api/comments/{commentId}")
     public ResponseDto<?> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetails details) {
         return commentService.deleteComment(commentId, details);
     }

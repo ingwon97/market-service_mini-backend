@@ -12,5 +12,8 @@ public class Member {
     private Long id;
 
     @Column(nullable = false)
+    private String username;
+
+    @Column(nullable = false)
     private String nickname;
 }
