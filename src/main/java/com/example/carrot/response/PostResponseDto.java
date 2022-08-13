@@ -16,13 +16,13 @@ public class PostResponseDto {
     private String title;
     private String content;
     private String imageUrl;
-    private List<Bookmark> category = new ArrayList<>();
-    private String price;
+//    private List<Bookmark> category = new ArrayList<>();
+    private Long price;
+    // 작성자 추가해줘야 되는거 아닌가?
+     private String nickname;
 
-    private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private LocalDateTime createdAt;
 
-    // 작성자 추가해줘야 되는거 아님?
-    // private String nickname;
 
 }

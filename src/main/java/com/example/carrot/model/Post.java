@@ -1,21 +1,18 @@
 package com.example.carrot.model;
 
 import com.example.carrot.request.PostRequestDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+@Getter @Setter
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Post {
+public class Post { 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,17 +28,18 @@ public class Post {
     private String content;
 
     @Column(nullable = false)
-    private String price;
+    private Long price;
 
     private String image_url;
+    private String nickname;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Bookmark> category = new ArrayList<>();
+//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//    private List<Bookmark> category = new ArrayList<>();
 
     public void update(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.category = requestDto.getCategory();
+//        this.category = requestDto.getCategory();
         this.price = requestDto.getPrice();
     }
 
@@ -50,6 +48,8 @@ public class Post {
         this.content = requestDto.getContent();
         this.price = requestDto.getPrice();
         this.image_url = image_url;
-        this.category = requestDto.getCategory();
+//        this.category = requestDto.getCategory();
+
     }
+
 }

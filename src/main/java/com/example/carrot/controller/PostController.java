@@ -43,11 +43,11 @@ public class PostController {
     public ResponseDto<?> updatePost(@PathVariable Long id,
                                      @RequestParam("image") MultipartFile image,
                                      @RequestParam("dto") PostRequestDto requestDto) throws IOException {
-        //이미지가 들어왔다면
+        //이미지가 없다면
         if (image.isEmpty()) {
             return postService.updatePost(id, requestDto);
         }
-        //이미지가 없다면
+        //이미지가 들어왔다면
         return postService.updatePost(id, image, requestDto);
     }
 
@@ -70,5 +70,6 @@ public class PostController {
     public ResponseDto<?> addPostCategory() {
         return postService.addPostCategory();
     }*/
+
 
 }

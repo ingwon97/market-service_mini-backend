@@ -30,7 +30,7 @@ public class MemberController {
 
     // 회원 가입 요청 처리
     @PostMapping("/api/members/signup")
-    public String registerUser(@RequestBody SignupRequestDto requestDto) {
+    public String registerUser(SignupRequestDto requestDto) {
         memberService.registerUser(requestDto);
         return "redirect:/api/members/login";
     }

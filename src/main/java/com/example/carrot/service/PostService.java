@@ -1,7 +1,5 @@
 package com.example.carrot.service;
 
-import com.example.carrot.image.S3UploaderService;
-import com.example.carrot.model.Bookmark;
 import com.example.carrot.model.Member;
 import com.example.carrot.model.Post;
 import com.example.carrot.repository.MemberRepository;
@@ -10,13 +8,11 @@ import com.example.carrot.request.PostRequestDto;
 import com.example.carrot.response.PostResponseDto;
 import com.example.carrot.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +21,7 @@ import java.util.Optional;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final S3UploaderService s3UploaderService;
+//    private final S3UploaderService s3UploaderService;
     private final MemberRepository memberRepository;
 
     public ResponseDto<?> getPostById(Long postId) {
@@ -39,8 +35,9 @@ public class PostService {
                         .id(post.getId())
                         .title(post.getTitle())
                         .content(post.getContent())
+                        .nickname(post.getNickname())
                         .imageUrl(post.getImage_url())
-                        .category(post.getCategory())
+//                        .category(post.getCategory())
                         .price(post.getPrice())
                         .build()
         );
@@ -53,17 +50,18 @@ public class PostService {
 
         // 멤버를 가지고, 게시글 만들기
         Member member = memberRepository.findById(memberId).get();
-        String imageUrl = s3UploaderService.upload(image, "static");
+//        String imageUrl = s3UploaderService.upload(image, "static");
 
-        List<Bookmark> categories = requestDto.getCategory();
+//        List<Bookmark> categories = requestDto.getCategory();
 
         Post post = Post.builder()
                 .member(member)
                 .title(requestDto.getTitle())
                 .content(requestDto.getContent())
                 .price(requestDto.getPrice())
-                .image_url(imageUrl)
-                .category(requestDto.getCategory())
+                .nickname(member.getNickname())
+//                .image_url(imageUrl)
+//                .category(requestDto.getCategory())
                 .build();
 
         postRepository.save(post);
@@ -71,71 +69,93 @@ public class PostService {
         return ResponseDto.success(post);
     }
 
-    @Transactional(readOnly = true)
-    public Post isPresentPost(Long postId) {
-        Optional<Post> optionalPost = postRepository.findById(postId);
-        return optionalPost.orElse(null);
-    }
 
     public ResponseDto<?> getAllPosts() {
         List<Post> posts = postRepository.findAll();
         return ResponseDto.success(posts);
     }
 
+
+
     @Transactional
     public ResponseDto<?> updatePost(Long postId, PostRequestDto requestDto) {
+
+        // 멤버를 가지고 오기
 
         // 멤버가 다르다면, 작성자만 수정할 수 있습니다.
         Post post = isPresentPost(postId);
         if (post == null) {
-            ResponseDto.fail("POST_NOT_FOUND", "게시글이 존재하지 않습니다");
+            return ResponseDto.fail("POST_NOT_FOUND", "게시글이 존재하지 않습니다");
+        }
+        Post postByMemberAndId = postRepository.findByMemberAndId(member, postId).orElse(null);
+
+        if (postByMemberAndId == null) {
+            return ResponseDto.fail("POST_BY_MEMBER_NOT_FOUND", "해당 사용자의 게시글이 존재하지 않습니다");
         }
 
-        post.update(requestDto);
-        return ResponseDto.success(post);
+        postByMemberAndId.update(requestDto);
+        return ResponseDto.success(postByMemberAndId);
     }
 
     @Transactional
     public ResponseDto<?> updatePost(Long postId, MultipartFile image, PostRequestDto requestDto) throws IOException {
 
+        // 멤버를 가지고 오기
+
         // 멤버가 다르다면, 작성자만 수정할 수 있습니다.
         Post post = isPresentPost(postId);
+
         if (post == null) {
-            ResponseDto.fail("POST_NOT_FOUND", "게시글이 존재하지 않습니다");
+            return ResponseDto.fail("POST_NOT_FOUND", "게시글이 존재하지 않습니다");
+        }
+        Post postByMemberAndId = postRepository.findByMemberAndId(member, postId).orElse(null);
+
+        if (postByMemberAndId == null) {
+            return ResponseDto.fail("POST_BY_MEMBER_NOT_FOUND", "해당 사용자의 게시글이 존재하지 않습니다");
         }
 
-        String imageUrl = s3UploaderService.upload(image, "static");
+//        String imageUrl = s3UploaderService.upload(image, "static");
+        String imageUrl = null;
 
-        post.update(imageUrl, requestDto);
-        return ResponseDto.success(post);
+        postByMemberAndId.update(imageUrl, requestDto);
+        return ResponseDto.success(postByMemberAndId);
     }
-
 
     @Transactional
     public ResponseDto<?> deletePost(Long postId) {
-        //멤버인지를 인식
-
-        //Post가 있는지 인식
+        // 멤버와 PostId를 가지고 게시글을 가지고오기
         Post post = isPresentPost(postId);
         if (post == null) {
-            ResponseDto.fail("POST_NOT_FOUND", "게시글이 존재하지 않습니다");
+            return ResponseDto.fail("POST_NOT_FOUND", "게시글이 존재하지 않습니다");
         }
 
-        postRepository.delete(post);
+        // 멤버가 다르다면, 작성자만 삭제할 수 있습니다.
+        Post postByMemberAndId = postRepository.findByMemberAndId(member, postId).orElse(null);
+        if (postByMemberAndId == null) {
+            return ResponseDto.fail("POST_BY_MEMBER_NOT_FOUND", "해당 사용자의 게시글이 존재하지 않습니다");
+        }
+
+        postRepository.delete(postByMemberAndId);
         return ResponseDto.success("delete success");
     }
+
 
     // 후에는 정규표현식 추가
     public ResponseDto<?> searchPost(String searchKeyword) {
         if (searchKeyword == null) {
             return ResponseDto.fail("DATA_NOT_FOUND", "글자를 입력해 주세요");
         }
-        List<Post> byTitleContaining = postRepository.findByTitleContaining(searchKeyword);
-        if (byTitleContaining == null) {
+        List<Post> findPosts = postRepository.findAllByTitleContaining(searchKeyword);
+        if (findPosts == null) {
             return ResponseDto.fail("SEARCH_NOT_FOUND", "게시글을 찾을 수 없습니다");
         }
-        return ResponseDto.success(byTitleContaining);
+        return ResponseDto.success(findPosts);
     }
 
+    @Transactional(readOnly = true)
+    public Post isPresentPost(Long postId) {
+        Optional<Post> optionalPost = postRepository.findById(postId);
+        return optionalPost.orElse(null);
+    }
 
 }
