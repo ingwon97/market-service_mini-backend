@@ -26,14 +26,22 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseDto<?> singup(@RequestBody MemberRequestDto dto) {
+    public ResponseDto<?> signup(@RequestBody MemberRequestDto dto) {
         try{
             return memberService.singup(dto);
         } catch (Exception e) {
             return ResponseDto.fail("",e.getMessage());
         }
+    }
 
-
+    // 아이디 중복 체크
+    @GetMapping("/check/{username}")
+    public ResponseDto<?> checkId(@PathVariable String username) {
+        try {
+            return memberService.checkId(username);
+        } catch (Exception e) {
+            return  ResponseDto.fail("Fail_Duplicate_Error", e.getMessage());
+        }
     }
 
     // 로그인
