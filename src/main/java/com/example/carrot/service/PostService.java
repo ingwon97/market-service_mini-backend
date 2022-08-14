@@ -133,7 +133,7 @@ public class PostService {
         }
 
         String imageUrl = postByMemberAndId.getImage_url();
-        String deleteUrl = imageUrl.substring(imageUrl.indexOf('/'));
+        String deleteUrl = imageUrl.substring(imageUrl.indexOf("/static"));
 
         s3UploaderService.deleteImage(deleteUrl);
         postRepository.delete(postByMemberAndId);
