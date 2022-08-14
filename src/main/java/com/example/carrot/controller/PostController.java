@@ -1,11 +1,11 @@
 package com.example.carrot.controller;
 
+/*
 import com.example.carrot.request.PostRequestDto;
 import com.example.carrot.response.ResponseDto;
 import com.example.carrot.service.PostService;
 import com.example.carrot.service.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,15 +61,17 @@ public class PostController {
         postService.searchPost(title);
     }
 
-    /*@GetMapping("/api/posts/category")
-    public ResponseDto<?> getPostsByCategory() {
-        return postService.getPostsByCategory();
+    @GetMapping("/api/posts/category")
+    public ResponseDto<?> getPostsByCategory(@RequestParam("category") String category) {
+        return postService.getPostsByCategory(category);
     }
 
-    @PostMapping("/api/posts/category")
-    public ResponseDto<?> addPostCategory() {
-        return postService.addPostCategory();
-    }*/
+    */
+/*@PostMapping("/api/posts/category")
+    public ResponseDto<?> addPostCategory(@RequestBody String category) {
+        return postService.addPostCategory(category);
+    }*//*
 
 
 }
+*/

@@ -7,6 +7,7 @@ import com.example.carrot.repository.PostRepository;
 import com.example.carrot.request.PostRequestDto;
 import com.example.carrot.response.PostResponseDto;
 import com.example.carrot.response.ResponseDto;
+import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,7 @@ import java.util.Optional;
 public class PostService {
 
     private final PostRepository postRepository;
-//    private final S3UploaderService s3UploaderService;
+    private final S3UploaderService s3UploaderService;
     private final MemberRepository memberRepository;
 
     public ResponseDto<?> getPostById(Long postId) {
@@ -37,12 +38,11 @@ public class PostService {
                         .content(post.getContent())
                         .nickname(post.getNickname())
                         .imageUrl(post.getImage_url())
-//                        .category(post.getCategory())
+                        .category(post.getCategory())
                         .price(post.getPrice())
                         .build()
         );
     }
-
 
     @Transactional
     public ResponseDto<?> createPost(Long memberId, MultipartFile image, PostRequestDto requestDto) throws IOException {
@@ -61,7 +61,7 @@ public class PostService {
                 .price(requestDto.getPrice())
                 .nickname(member.getNickname())
 //                .image_url(imageUrl)
-//                .category(requestDto.getCategory())
+                .category(requestDto.getCategory())
                 .build();
 
         postRepository.save(post);
@@ -69,13 +69,10 @@ public class PostService {
         return ResponseDto.success(post);
     }
 
-
     public ResponseDto<?> getAllPosts() {
         List<Post> posts = postRepository.findAll();
         return ResponseDto.success(posts);
     }
-
-
 
     @Transactional
     public ResponseDto<?> updatePost(Long postId, PostRequestDto requestDto) {
@@ -135,6 +132,10 @@ public class PostService {
             return ResponseDto.fail("POST_BY_MEMBER_NOT_FOUND", "해당 사용자의 게시글이 존재하지 않습니다");
         }
 
+        String imageUrl = postByMemberAndId.getImage_url();
+        String deleteUrl = imageUrl.substring(imageUrl.indexOf('/'));
+
+        s3UploaderService.deleteImage(deleteUrl);
         postRepository.delete(postByMemberAndId);
         return ResponseDto.success("delete success");
     }
@@ -158,4 +159,9 @@ public class PostService {
         return optionalPost.orElse(null);
     }
 
+    public ResponseDto<?> getPostsByCategory(String category) {
+
+        List<Post> allPostsByCategory = postRepository.findAllByCategory(category);
+        return ResponseDto.success(allPostsByCategory);
+    }
 }

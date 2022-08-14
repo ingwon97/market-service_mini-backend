@@ -30,16 +30,18 @@ public class Post {
     @Column(nullable = false)
     private Long price;
 
-    private String image_url;
-    private String nickname;
+    @Column
+    private String category;
 
-//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    private List<Bookmark> category = new ArrayList<>();
+    @Column
+    private String image_url;
+    @Column
+    private String nickname;
 
     public void update(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-//        this.category = requestDto.getCategory();
+        this.category = requestDto.getCategory();
         this.price = requestDto.getPrice();
     }
 
@@ -48,7 +50,7 @@ public class Post {
         this.content = requestDto.getContent();
         this.price = requestDto.getPrice();
         this.image_url = image_url;
-//        this.category = requestDto.getCategory();
+        this.category = requestDto.getCategory();
 
     }
 
