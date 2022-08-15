@@ -5,10 +5,9 @@ import com.example.carrot.request.MemberRequestDto;
 import com.example.carrot.response.ResponseDto;
 import com.example.carrot.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +29,7 @@ public class MemberController {
         try{
             return memberService.singup(dto);
         } catch (Exception e) {
-            return ResponseDto.fail("",e.getMessage());
+            return ResponseDto.fail("FAIL_SIGNUP_ERROR",e.getMessage());
         }
     }
 
@@ -40,7 +39,7 @@ public class MemberController {
         try {
             return memberService.checkId(username);
         } catch (Exception e) {
-            return  ResponseDto.fail("Fail_Duplicate_Error", e.getMessage());
+            return  ResponseDto.fail("FAIL_DUPLICATE_ERROR", e.getMessage());
         }
     }
 
@@ -50,7 +49,7 @@ public class MemberController {
         try {
             return  memberService.login(dto);
         } catch (Exception e) {
-            return ResponseDto.fail("", e.getMessage());
+            return ResponseDto.fail("FAIL_LOGININFO_ERROR", e.getMessage());
         }
 
     }
@@ -61,5 +60,18 @@ public class MemberController {
         new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
         return ResponseDto.success(null);
     }
+
+    //회원 정보 조회
+    @GetMapping("/info")
+    public ResponseDto<?> LoginInfo(@AuthenticationPrincipal UserDetails userInfo) {
+        try {
+            return  memberService.LoginInfo(userInfo);
+        } catch (Exception e) {
+            return  ResponseDto.fail("NOT_STATE_LOGIN", e.getMessage());
+        }
+
+
+    }
+
 }
 
