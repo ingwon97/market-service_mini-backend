@@ -1,6 +1,7 @@
 package com.example.carrot.model;
 
 import com.example.carrot.request.PostRequestDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -37,6 +38,11 @@ public class Post {
     private String image_url;
     @Column
     private String nickname;
+
+    @Column
+    @JsonIgnore
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    List<Comment> comments = new ArrayList<>();
 
     public void update(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
