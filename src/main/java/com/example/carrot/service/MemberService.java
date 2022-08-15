@@ -1,9 +1,11 @@
 package com.example.carrot.service;
 
+import com.example.carrot.jwt.TokenProvider;
 import com.example.carrot.model.Member;
 import com.example.carrot.repository.MemberRepository;
 import com.example.carrot.request.LoginDto;
 import com.example.carrot.request.MemberRequestDto;
+import com.example.carrot.request.TokenDto;
 import com.example.carrot.response.MemberInfoResponseDto;
 import com.example.carrot.response.MemberResponseDto;
 import com.example.carrot.response.ResponseDto;
@@ -17,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 @Service
@@ -28,6 +31,8 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
+    private final TokenProvider tokenProvider;
 
     @Transactional
     public ResponseDto<?> singup(MemberRequestDto memberRequestDto) {
@@ -47,19 +52,27 @@ public class MemberService {
     }
 
 
-    public ResponseDto<?> login(LoginDto dto) {
+    public ResponseDto<?> login(LoginDto dto, HttpServletResponse response) {
+        Member member = memberRepository.findByUsername(dto.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
+        );
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword());
-
-        try {
-            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (Exception e) {
-            return ResponseDto.fail("Fail_Login_Error", "로그인 정보를 확인해주세요");
+        if (!member.validatePassword(passwordEncoder, dto.getPassword())) {
+            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
         }
 
-        return ResponseDto.success(dto);
+        TokenDto tokenDto = tokenProvider.generateTokenDto(member);
+        tokenToHeaders(tokenDto, response);
+
+
+        return ResponseDto.success(
+                MemberInfoResponseDto.builder()
+                        .id(member.getMember_id())
+                        .username(member.getUsername())
+                        .createdAt(member.getCreatedAt())
+                        .modifiedAt(member.getModifiedAt())
+                        .build()
+        );
 
     }
 
@@ -86,5 +99,11 @@ public class MemberService {
 
         return ResponseDto.success(memberInfoResponseDto);
 
+    }
+
+    public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
+        response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
+        response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
+        response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
     }
 }

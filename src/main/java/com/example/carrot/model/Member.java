@@ -3,6 +3,7 @@ package com.example.carrot.model;
 import com.example.carrot.request.MemberRequestDto;
 
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 
@@ -35,5 +36,9 @@ public class Member extends Timestamped {
         this.username = memberRequestDto.getUsername();
         this.nickname = memberRequestDto.getNickname();
         this.password = memberRequestDto.getPassword();
+    }
+
+    public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
+        return passwordEncoder.matches(password, this.password);
     }
 }

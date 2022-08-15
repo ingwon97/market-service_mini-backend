@@ -45,11 +45,12 @@ public class MemberController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseDto<?> login(@RequestBody LoginDto dto ){
+    public ResponseDto<?> login(@RequestBody LoginDto dto,
+                                HttpServletResponse response){
         try {
-            return  memberService.login(dto);
+            return  memberService.login(dto, response);
         } catch (Exception e) {
-            return ResponseDto.fail("FAIL_LOGININFO_ERROR", e.getMessage());
+            return ResponseDto.fail("FAIL_LOGIN_ERROR", e.getMessage());
         }
 
     }

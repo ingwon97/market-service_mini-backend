@@ -2,6 +2,7 @@ package com.example.carrot.response;
 
 
 import com.example.carrot.model.Member;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
