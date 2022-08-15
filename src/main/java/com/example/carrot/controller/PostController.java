@@ -1,5 +1,6 @@
 package com.example.carrot.controller;
 
+import com.example.carrot.model.MemberDetailsImpl;
 import com.example.carrot.request.PostRequestDto;
 import com.example.carrot.response.ResponseDto;
 import com.example.carrot.service.PostService;
@@ -25,10 +26,10 @@ public class PostController {
     @PostMapping("/api/posts")
     public ResponseDto<?> createPost(@RequestParam("image")MultipartFile image,
                                      @RequestParam("dto") String dto,
-                                     @AuthenticationPrincipal UserDetailsImpl userDetails
+                                     @AuthenticationPrincipal MemberDetailsImpl memberDetails
                                      ) throws IOException {
         PostRequestDto requestDto  = new ObjectMapper().readValue(dto, PostRequestDto.class);
-        Long memberId = userDetails.getMember().getId();
+        Long memberId = memberDetails.getUser().getMember_id();
         return postService.createPost(memberId, image, requestDto);
     }
 
@@ -43,8 +44,8 @@ public class PostController {
     public ResponseDto<?> updatePost(@PathVariable Long id,
                                      @RequestParam("image") MultipartFile image,
                                      @RequestParam("dto") PostRequestDto requestDto,
-                                     @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        Long memberId = userDetails.getMember().getId();
+                                     @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
+        Long memberId = memberDetails.getUser().getMember_id();
         //이미지가 없다면
         if (image.isEmpty()) {
             return postService.updatePost(memberId, id, requestDto);
@@ -55,8 +56,8 @@ public class PostController {
 
     @DeleteMapping("/api/posts/{postId}")
     public ResponseDto<?> deletePost(@PathVariable Long id,
-                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Long memberId = userDetails.getMember().getId();
+                                     @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
+        Long memberId = memberDetails.getUser().getMember_id();
         return postService.deletePost(memberId, id);
     }
 
