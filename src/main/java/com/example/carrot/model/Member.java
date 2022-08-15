@@ -1,6 +1,5 @@
 package com.example.carrot.model;
 
-
 import com.example.carrot.request.MemberRequestDto;
 
 import lombok.*;
@@ -20,6 +19,7 @@ public class Member extends Timestamped {
     private Long member_id;
 
     @Column(nullable = false, unique = true)
+
     private String username;
 
     @Column(nullable = false)

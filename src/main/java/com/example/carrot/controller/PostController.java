@@ -29,7 +29,6 @@ public class PostController {
                                      @AuthenticationPrincipal MemberDetailsImpl memberDetails
                                      ) throws IOException {
         Long memberId = memberDetails.getUser().getMember_id();
-        System.out.println(memberId);
         PostRequestDto requestDto  = new ObjectMapper().readValue(dto, PostRequestDto.class);
         return postService.createPost(memberId, image, requestDto);
     }
