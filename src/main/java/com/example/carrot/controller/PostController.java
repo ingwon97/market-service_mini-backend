@@ -43,9 +43,10 @@ public class PostController {
     @PutMapping("/api/posts/{postId}")
     public ResponseDto<?> updatePost(@PathVariable Long postId,
                                      @RequestParam("image") MultipartFile image,
-                                     @RequestParam("dto") PostRequestDto requestDto,
+                                     @RequestParam("dto") String dto,
                                      @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
         Long memberId = memberDetails.getUser().getMember_id();
+        PostRequestDto requestDto  = new ObjectMapper().readValue(dto, PostRequestDto.class);
         //이미지가 없다면
         if (image.isEmpty()) {
             return postService.updatePost(memberId, postId, requestDto);

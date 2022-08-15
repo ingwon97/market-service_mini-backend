@@ -110,8 +110,12 @@ public class PostService {
             return ResponseDto.fail("POST_BY_MEMBER_NOT_FOUND", "해당 사용자의 게시글이 존재하지 않습니다");
         }
 
-//        String imageUrl = s3UploaderService.upload(image, "static");
-        String imageUrl = null;
+        String imageUrl = postByMemberAndId.getImage_url();
+        String deleteUrl = imageUrl.substring(imageUrl.indexOf("static"));
+
+        s3UploaderService.deleteImage(deleteUrl);
+
+        imageUrl = s3UploaderService.upload(image, "static");
 
         postByMemberAndId.update(imageUrl, requestDto);
         return ResponseDto.success(postByMemberAndId);
@@ -137,7 +141,6 @@ public class PostService {
         String deleteUrl = imageUrl.substring(imageUrl.indexOf("static"));
 
         s3UploaderService.deleteImage(deleteUrl);
-//        s3UploaderService.deleteImage("test.png");
         postRepository.delete(postByMemberAndId);
         return ResponseDto.success("delete success");
     }
