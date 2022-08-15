@@ -2,16 +2,14 @@ package com.example.carrot.request;
 
 import com.example.carrot.model.Bookmark;
 import jdk.jfr.Category;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class PostRequestDto {
 

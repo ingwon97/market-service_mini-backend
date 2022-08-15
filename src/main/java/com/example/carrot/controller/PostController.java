@@ -24,12 +24,13 @@ public class PostController {
     }
 
     @PostMapping("/api/posts")
-    public ResponseDto<?> createPost(@RequestParam("image")MultipartFile image,
+    public ResponseDto<?> createPost(@RequestParam("image") MultipartFile image,
                                      @RequestParam("dto") String dto,
                                      @AuthenticationPrincipal MemberDetailsImpl memberDetails
                                      ) throws IOException {
-        PostRequestDto requestDto  = new ObjectMapper().readValue(dto, PostRequestDto.class);
         Long memberId = memberDetails.getUser().getMember_id();
+        System.out.println(memberId);
+        PostRequestDto requestDto  = new ObjectMapper().readValue(dto, PostRequestDto.class);
         return postService.createPost(memberId, image, requestDto);
     }
 
@@ -62,8 +63,8 @@ public class PostController {
     }
 
     @GetMapping("/api/posts/search")
-    public void searchPost(@RequestParam String title) {
-        postService.searchPost(title);
+    public ResponseDto<?> searchPost(@RequestParam String title) {
+        return postService.searchPost(title);
     }
 
     @GetMapping("/api/posts/category")

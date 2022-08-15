@@ -58,7 +58,7 @@ public class PostService {
                 .content(requestDto.getContent())
                 .price(requestDto.getPrice())
                 .nickname(member.getNickname())
-//                .image_url(imageUrl)
+                .image_url(imageUrl)
                 .category(requestDto.getCategory())
                 .build();
 
