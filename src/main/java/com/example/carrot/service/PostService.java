@@ -1,5 +1,6 @@
 package com.example.carrot.service;
 
+import com.example.carrot.image.S3UploaderService;
 import com.example.carrot.model.Member;
 import com.example.carrot.model.Post;
 import com.example.carrot.repository.MemberRepository;
@@ -7,7 +8,6 @@ import com.example.carrot.repository.PostRepository;
 import com.example.carrot.request.PostRequestDto;
 import com.example.carrot.response.PostResponseDto;
 import com.example.carrot.response.ResponseDto;
-import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,9 +50,7 @@ public class PostService {
 
         // 멤버를 가지고, 게시글 만들기
         Member member = memberRepository.findById(memberId).get();
-//        String imageUrl = s3UploaderService.upload(image, "static");
-
-//        List<Bookmark> categories = requestDto.getCategory();
+        String imageUrl = s3UploaderService.upload(image, "static");
 
         Post post = Post.builder()
                 .member(member)
@@ -75,9 +73,10 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseDto<?> updatePost(Long postId, PostRequestDto requestDto) {
+    public ResponseDto<?> updatePost(Long memberId, Long postId, PostRequestDto requestDto) {
 
         // 멤버를 가지고 오기
+        Member member = memberRepository.findById(memberId).get();
 
         // 멤버가 다르다면, 작성자만 수정할 수 있습니다.
         Post post = isPresentPost(postId);
@@ -95,10 +94,10 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseDto<?> updatePost(Long postId, MultipartFile image, PostRequestDto requestDto) throws IOException {
+    public ResponseDto<?> updatePost(Long memberId, Long postId, MultipartFile image, PostRequestDto requestDto) throws IOException {
 
         // 멤버를 가지고 오기
-
+        Member member = memberRepository.findById(memberId).get();
         // 멤버가 다르다면, 작성자만 수정할 수 있습니다.
         Post post = isPresentPost(postId);
 
@@ -119,7 +118,9 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseDto<?> deletePost(Long postId) {
+    public ResponseDto<?> deletePost(Long memberId, Long postId) {
+
+        Member member = memberRepository.findById(memberId).get();
         // 멤버와 PostId를 가지고 게시글을 가지고오기
         Post post = isPresentPost(postId);
         if (post == null) {

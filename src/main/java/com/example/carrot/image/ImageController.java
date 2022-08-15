@@ -1,6 +1,5 @@
 package com.example.carrot.image;
 
-/*
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,4 +29,3 @@ public class ImageController {
     }
 
 }
-*/

@@ -1,6 +1,5 @@
 package com.example.carrot.controller;
 
-/*
 import com.example.carrot.request.PostRequestDto;
 import com.example.carrot.response.ResponseDto;
 import com.example.carrot.service.PostService;
@@ -42,18 +41,22 @@ public class PostController {
     @PutMapping("/api/posts/{postId}")
     public ResponseDto<?> updatePost(@PathVariable Long id,
                                      @RequestParam("image") MultipartFile image,
-                                     @RequestParam("dto") PostRequestDto requestDto) throws IOException {
+                                     @RequestParam("dto") PostRequestDto requestDto,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        Long memberId = userDetails.getMember().getId();
         //이미지가 없다면
         if (image.isEmpty()) {
-            return postService.updatePost(id, requestDto);
+            return postService.updatePost(memberId, id, requestDto);
         }
         //이미지가 들어왔다면
-        return postService.updatePost(id, image, requestDto);
+        return postService.updatePost(memberId, id, image, requestDto);
     }
 
     @DeleteMapping("/api/posts/{postId}")
-    public ResponseDto<?> deletePost(@PathVariable Long id) {
-        return postService.deletePost(id);
+    public ResponseDto<?> deletePost(@PathVariable Long id,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long memberId = userDetails.getMember().getId();
+        return postService.deletePost(memberId, id);
     }
 
     @GetMapping("/api/posts/search")
@@ -66,12 +69,10 @@ public class PostController {
         return postService.getPostsByCategory(category);
     }
 
-    */
-/*@PostMapping("/api/posts/category")
+    /*@PostMapping("/api/posts/category")
     public ResponseDto<?> addPostCategory(@RequestBody String category) {
         return postService.addPostCategory(category);
-    }*//*
+    }*/
 
 
 }
-*/
