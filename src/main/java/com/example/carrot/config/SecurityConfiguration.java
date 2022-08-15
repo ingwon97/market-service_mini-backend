@@ -30,58 +30,58 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class SecurityConfiguration {
 
-  @Value("${jwt.secret}")
-  String SECRET_KEY;
-  private final TokenProvider tokenProvider;
-  private final MemberDetailsService userDetailsService;
-  private final AuthenticationEntryPointException authenticationEntryPointException;
-  private final AccessDeniedHandlerException accessDeniedHandlerException;
+    @Value("${jwt.secret}")
+    String SECRET_KEY;
+    private final TokenProvider tokenProvider;
+    private final MemberDetailsService userDetailsService;
+    private final AuthenticationEntryPointException authenticationEntryPointException;
+    private final AccessDeniedHandlerException accessDeniedHandlerException;
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  @Bean
-  @Order(SecurityProperties.BASIC_AUTH_ORDER)
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.cors();
+    @Bean
+    @Order(SecurityProperties.BASIC_AUTH_ORDER)
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.cors();
 
-    http.csrf().disable()
+        http.csrf().disable()
 
-            .exceptionHandling()
-            .authenticationEntryPoint(authenticationEntryPointException)
-            .accessDeniedHandler(accessDeniedHandlerException)
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPointException)
+                .accessDeniedHandler(accessDeniedHandlerException)
 
-            .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-            .and()
-            .authorizeRequests()
-            .antMatchers("/api/members/**").permitAll()
-            .antMatchers("/api/post/**").permitAll()
-            .antMatchers("/api/comment/**").permitAll()
-            .antMatchers("/api/reply/**").permitAll()
-            .anyRequest().authenticated()
+                .and()
+                .authorizeRequests()
+                .antMatchers("/api/members/**").permitAll()
+                .antMatchers("/api/posts/**").permitAll()
+                .antMatchers("/api/comments/**").permitAll()
+                .anyRequest().authenticated()
 
-            .and()
-            .apply(new JwtSecurityConfiguration(SECRET_KEY, tokenProvider, userDetailsService));
+                .and()
+                .apply(new JwtSecurityConfiguration(SECRET_KEY, tokenProvider, userDetailsService));
 
-    return http.build();
-  }
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
+        return http.build();
+    }
 
-    configuration.addAllowedOrigin("*");
-    configuration.addAllowedHeader("*");
-    configuration.addAllowedMethod("*");
-    configuration.setAllowCredentials(true);
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-    return source;
-  }
+        configuration.addAllowedOrigin("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
 }

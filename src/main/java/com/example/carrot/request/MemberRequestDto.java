@@ -9,11 +9,14 @@ import javax.validation.constraints.Size;
 @Getter
 public class MemberRequestDto {
 
-    private String username;
-
     @NotBlank
     @Size(min = 4, max = 12)
-    @Pattern(regexp = "[a-zA-Z\\d]*${3,12}")  //자바의 정규 표현식
+    @Pattern(regexp = "[a-zA-Z\\d]*${3,12}")
+    private String username;
+
+    /*@NotBlank
+    @Size(min = 4, max = 12)
+    @Pattern(regexp = "[a-zA-Z\\d]*${3,12}")  //자바의 정규 표현식*/
     private String nickname;
 
     @NotBlank

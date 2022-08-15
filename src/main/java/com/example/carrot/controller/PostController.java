@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RestController
@@ -23,13 +24,12 @@ public class PostController {
         return postService.getPostById(postId);
     }
 
-    @PostMapping("/api/posts")
+    @PostMapping("/api/auth/posts")
     public ResponseDto<?> createPost(@RequestParam("image") MultipartFile image,
                                      @ModelAttribute PostRequestDto requestDto,
-                                     @AuthenticationPrincipal MemberDetailsImpl memberDetails
+                                     HttpServletRequest request
                                      ) throws IOException {
-        Long memberId = memberDetails.getUser().getMember_id();
-        return postService.createPost(memberId, image, requestDto);
+        return postService.createPost(image, requestDto, request);
     }
 
     // 게시글 조회
@@ -39,25 +39,23 @@ public class PostController {
     }
 
     // 게시글 수정
-    @PutMapping("/api/posts/{postId}")
+    @PutMapping("/api/auth/posts/{postId}")
     public ResponseDto<?> updatePost(@PathVariable Long postId,
                                      @RequestParam("image") MultipartFile image,
                                      @ModelAttribute PostRequestDto requestDto,
-                                     @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
-        Long memberId = memberDetails.getUser().getMember_id();
+                                     HttpServletRequest request
+                                     ) throws IOException {
         //이미지가 없다면
         if (image.isEmpty()) {
-            return postService.updatePost(memberId, postId, requestDto);
+            return postService.updatePost(postId, requestDto,request);
         }
         //이미지가 들어왔다면
-        return postService.updatePost(memberId, postId, image, requestDto);
+        return postService.updatePost(postId, image, requestDto, request);
     }
 
-    @DeleteMapping("/api/posts/{postId}")
-    public ResponseDto<?> deletePost(@PathVariable Long postId,
-                                     @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
-        Long memberId = memberDetails.getUser().getMember_id();
-        return postService.deletePost(memberId, postId);
+    @DeleteMapping("/api/auth/posts/{postId}")
+    public ResponseDto<?> deletePost(@PathVariable Long postId, HttpServletRequest request) {
+        return postService.deletePost(postId, request);
     }
 
     @GetMapping("/api/posts/search")

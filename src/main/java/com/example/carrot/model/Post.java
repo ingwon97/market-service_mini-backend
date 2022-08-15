@@ -59,5 +59,8 @@ public class Post {
         this.category = requestDto.getCategory();
 
     }
+    public boolean validateMember(Member member) {
+        return !this.member.equals(member);
+    }
 
 }

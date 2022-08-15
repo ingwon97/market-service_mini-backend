@@ -3,9 +3,11 @@ package com.example.carrot.model;
 import com.example.carrot.request.MemberRequestDto;
 
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Builder
 @Getter
@@ -36,6 +38,17 @@ public class Member extends Timestamped {
         this.username = memberRequestDto.getUsername();
         this.nickname = memberRequestDto.getNickname();
         this.password = memberRequestDto.getPassword();
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        Member member = (Member) o;
+        return member_id != null && Objects.equals(member_id, member.getMember_id());
     }
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {

@@ -1,6 +1,7 @@
 package com.example.carrot.service;
 
 import com.example.carrot.image.S3UploaderService;
+import com.example.carrot.jwt.TokenProvider;
 import com.example.carrot.model.Member;
 import com.example.carrot.model.Post;
 import com.example.carrot.repository.MemberRepository;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final S3UploaderService s3UploaderService;
     private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
+
 
     public ResponseDto<?> getPostById(Long postId) {
         Post post = isPresentPost(postId);
@@ -45,11 +50,24 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseDto<?> createPost(Long memberId, MultipartFile image, PostRequestDto requestDto) throws IOException {
+    public ResponseDto<?> createPost(MultipartFile image, PostRequestDto requestDto, HttpServletRequest request) throws IOException {
 
+        if (null == request.getHeader("Refresh-Token")) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "로그인이 필요합니다.");
+        }
+
+        if (null == request.getHeader("Authorization")) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "로그인이 필요합니다.");
+        }
+
+        Member member = validateMember(request);
+        if (null == member) {
+            return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
+        }
 
         // 멤버를 가지고, 게시글 만들기
-        Member member = memberRepository.findById(memberId).get();
         String imageUrl = s3UploaderService.upload(image, "static");
 
         Post post = Post.builder()
@@ -73,75 +91,111 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseDto<?> updatePost(Long memberId, Long postId, PostRequestDto requestDto) {
+    public ResponseDto<?> updatePost(Long postId, PostRequestDto requestDto, HttpServletRequest request) {
 
-        // 멤버를 가지고 오기
-        Member member = memberRepository.findById(memberId).get();
+        if (null == request.getHeader("Refresh-Token")) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "로그인이 필요합니다.");
+        }
 
-        // 멤버가 다르다면, 작성자만 수정할 수 있습니다.
+        if (null == request.getHeader("Authorization")) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "로그인이 필요합니다.");
+        }
+
+        Member member = validateMember(request);
+        if (null == member) {
+            return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
+        }
+
         Post post = isPresentPost(postId);
+        if (null == post) {
+            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
+        }
+
+        if (post.validateMember(member)) {
+            return ResponseDto.fail("BAD_REQUEST", "작성자만 수정할 수 있습니다.");
+        }
+
         if (post == null) {
             return ResponseDto.fail("POST_NOT_FOUND", "게시글이 존재하지 않습니다");
         }
-        Post postByMemberAndId = postRepository.findByMemberAndId(member, postId).orElse(null);
 
-        if (postByMemberAndId == null) {
-            return ResponseDto.fail("POST_BY_MEMBER_NOT_FOUND", "해당 사용자의 게시글이 존재하지 않습니다");
-        }
-
-        postByMemberAndId.update(requestDto);
-        return ResponseDto.success(postByMemberAndId);
+        post.update(requestDto);
+        return ResponseDto.success(post);
     }
 
     @Transactional
-    public ResponseDto<?> updatePost(Long memberId, Long postId, MultipartFile image, PostRequestDto requestDto) throws IOException {
+    public ResponseDto<?> updatePost(Long postId, MultipartFile image, PostRequestDto requestDto, HttpServletRequest request) throws IOException {
 
         // 멤버를 가지고 오기
-        Member member = memberRepository.findById(memberId).get();
-        // 멤버가 다르다면, 작성자만 수정할 수 있습니다.
+        if (null == request.getHeader("Refresh-Token")) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "로그인이 필요합니다.");
+        }
+
+        if (null == request.getHeader("Authorization")) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "로그인이 필요합니다.");
+        }
+
+        Member member = validateMember(request);
+        if (null == member) {
+            return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
+        }
+
         Post post = isPresentPost(postId);
-
-        if (post == null) {
-            return ResponseDto.fail("POST_NOT_FOUND", "게시글이 존재하지 않습니다");
-        }
-        Post postByMemberAndId = postRepository.findByMemberAndId(member, postId).orElse(null);
-
-        if (postByMemberAndId == null) {
-            return ResponseDto.fail("POST_BY_MEMBER_NOT_FOUND", "해당 사용자의 게시글이 존재하지 않습니다");
+        if (null == post) {
+            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
         }
 
-        String imageUrl = postByMemberAndId.getImage_url();
+        if (post.validateMember(member)) {
+            return ResponseDto.fail("BAD_REQUEST", "작성자만 수정할 수 있습니다.");
+        }
+
+        String imageUrl = post.getImage_url();
         String deleteUrl = imageUrl.substring(imageUrl.indexOf("static"));
 
         s3UploaderService.deleteImage(deleteUrl);
 
         imageUrl = s3UploaderService.upload(image, "static");
 
-        postByMemberAndId.update(imageUrl, requestDto);
-        return ResponseDto.success(postByMemberAndId);
+        post.update(imageUrl, requestDto);
+        return ResponseDto.success(post);
     }
 
     @Transactional
-    public ResponseDto<?> deletePost(Long memberId, Long postId) {
+    public ResponseDto<?> deletePost(Long postId, HttpServletRequest request) {
 
-        Member member = memberRepository.findById(memberId).get();
-        // 멤버와 PostId를 가지고 게시글을 가지고오기
+        if (null == request.getHeader("Refresh-Token")) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "로그인이 필요합니다.");
+        }
+
+        if (null == request.getHeader("Authorization")) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "로그인이 필요합니다.");
+        }
+
+        Member member = validateMember(request);
+        if (null == member) {
+            return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
+        }
+
         Post post = isPresentPost(postId);
-        if (post == null) {
-            return ResponseDto.fail("POST_NOT_FOUND", "게시글이 존재하지 않습니다");
+        if (null == post) {
+            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
         }
 
-        // 멤버가 다르다면, 작성자만 삭제할 수 있습니다.
-        Post postByMemberAndId = postRepository.findByMemberAndId(member, postId).orElse(null);
-        if (postByMemberAndId == null) {
-            return ResponseDto.fail("POST_BY_MEMBER_NOT_FOUND", "해당 사용자의 게시글이 존재하지 않습니다");
+        if (post.validateMember(member)) {
+            return ResponseDto.fail("BAD_REQUEST", "작성자만 삭제할 수 있습니다.");
         }
 
-        String imageUrl = postByMemberAndId.getImage_url();
+        String imageUrl = post.getImage_url();
         String deleteUrl = imageUrl.substring(imageUrl.indexOf("static"));
 
         s3UploaderService.deleteImage(deleteUrl);
-        postRepository.delete(postByMemberAndId);
+        postRepository.delete(post);
         return ResponseDto.success("delete success");
     }
 
@@ -162,6 +216,14 @@ public class PostService {
     public Post isPresentPost(Long postId) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         return optionalPost.orElse(null);
+    }
+
+    @Transactional
+    public Member validateMember(HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            return null;
+        }
+        return tokenProvider.getMemberFromAuthentication();
     }
 
     public ResponseDto<?> getPostsByCategory(String category) {
