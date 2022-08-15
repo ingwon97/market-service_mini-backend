@@ -42,24 +42,24 @@ public class PostController {
 
     // 게시글 수정
     @PutMapping("/api/posts/{postId}")
-    public ResponseDto<?> updatePost(@PathVariable Long id,
+    public ResponseDto<?> updatePost(@PathVariable Long postId,
                                      @RequestParam("image") MultipartFile image,
                                      @RequestParam("dto") PostRequestDto requestDto,
                                      @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
         Long memberId = memberDetails.getUser().getMember_id();
         //이미지가 없다면
         if (image.isEmpty()) {
-            return postService.updatePost(memberId, id, requestDto);
+            return postService.updatePost(memberId, postId, requestDto);
         }
         //이미지가 들어왔다면
-        return postService.updatePost(memberId, id, image, requestDto);
+        return postService.updatePost(memberId, postId, image, requestDto);
     }
 
     @DeleteMapping("/api/posts/{postId}")
-    public ResponseDto<?> deletePost(@PathVariable Long id,
+    public ResponseDto<?> deletePost(@PathVariable Long postId,
                                      @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
         Long memberId = memberDetails.getUser().getMember_id();
-        return postService.deletePost(memberId, id);
+        return postService.deletePost(memberId, postId);
     }
 
     @GetMapping("/api/posts/search")
