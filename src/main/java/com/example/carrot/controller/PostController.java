@@ -25,11 +25,10 @@ public class PostController {
 
     @PostMapping("/api/posts")
     public ResponseDto<?> createPost(@RequestParam("image") MultipartFile image,
-                                     @RequestParam("dto") String dto,
+                                     @ModelAttribute PostRequestDto requestDto,
                                      @AuthenticationPrincipal MemberDetailsImpl memberDetails
                                      ) throws IOException {
         Long memberId = memberDetails.getUser().getMember_id();
-        PostRequestDto requestDto  = new ObjectMapper().readValue(dto, PostRequestDto.class);
         return postService.createPost(memberId, image, requestDto);
     }
 
@@ -43,10 +42,9 @@ public class PostController {
     @PutMapping("/api/posts/{postId}")
     public ResponseDto<?> updatePost(@PathVariable Long postId,
                                      @RequestParam("image") MultipartFile image,
-                                     @RequestParam("dto") String dto,
+                                     @ModelAttribute PostRequestDto requestDto,
                                      @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
         Long memberId = memberDetails.getUser().getMember_id();
-        PostRequestDto requestDto  = new ObjectMapper().readValue(dto, PostRequestDto.class);
         //이미지가 없다면
         if (image.isEmpty()) {
             return postService.updatePost(memberId, postId, requestDto);

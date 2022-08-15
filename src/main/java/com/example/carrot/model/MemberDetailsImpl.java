@@ -1,18 +1,34 @@
 package com.example.carrot.model;
 
 
+import com.example.carrot.shared.Authority;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+@Data
+@NoArgsConstructor
 public class MemberDetailsImpl implements UserDetails {
 
-    private final Member member;
+    private Member member;
 
     public MemberDetailsImpl(Member member) {
         this.member = member;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(Authority.ROLE_MEMBER.toString());
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(authority);
+        return authorities;
     }
 
     public Member getUser() {
@@ -49,8 +65,4 @@ public class MemberDetailsImpl implements UserDetails {
         return true;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
-    }
 }
