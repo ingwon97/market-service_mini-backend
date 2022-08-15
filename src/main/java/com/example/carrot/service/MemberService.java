@@ -5,6 +5,7 @@ import com.example.carrot.model.MemberDetailsImpl;
 import com.example.carrot.repository.MemberRepository;
 import com.example.carrot.request.LoginDto;
 import com.example.carrot.request.MemberRequestDto;
+import com.example.carrot.response.MemberInfoResponseDto;
 import com.example.carrot.response.MemberResponseDto;
 import com.example.carrot.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +14,15 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
 
 @Service
 @RequiredArgsConstructor
@@ -72,5 +76,19 @@ public class MemberService {
         }
 
         return ResponseDto.success(username);
+    }
+
+    public ResponseDto<?> LoginInfo(UserDetails userInfo) {
+        Member member = memberRepository.findByUsername(userInfo.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("로그인 상태가 아닙니다.")
+        );
+
+        MemberInfoResponseDto memberInfoResponseDto = MemberInfoResponseDto.builder()
+                .username(member.getUsername())
+                .nickname(member.getNickname())
+                .build();
+
+        return ResponseDto.success(memberInfoResponseDto);
+
     }
 }
