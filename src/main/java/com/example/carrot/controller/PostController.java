@@ -3,7 +3,6 @@ package com.example.carrot.controller;
 import com.example.carrot.request.PostRequestDto;
 import com.example.carrot.response.ResponseDto;
 import com.example.carrot.service.PostService;
-import com.example.carrot.service.UserDetailsImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
