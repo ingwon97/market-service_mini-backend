@@ -4,6 +4,7 @@ import com.example.carrot.request.PostRequestDto;
 import com.example.carrot.response.ResponseDto;
 import com.example.carrot.service.PostService;
 import com.example.carrot.service.UserDetailsImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +25,10 @@ public class PostController {
 
     @PostMapping("/api/posts")
     public ResponseDto<?> createPost(@RequestParam("image")MultipartFile image,
-                                     @RequestParam("dto") PostRequestDto requestDto,
+                                     @RequestParam("dto") String dto,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails
                                      ) throws IOException {
+        PostRequestDto requestDto  = new ObjectMapper().readValue(dto, PostRequestDto.class);
         Long memberId = userDetails.getMember().getId();
         return postService.createPost(memberId, image, requestDto);
     }
