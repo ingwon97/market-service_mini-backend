@@ -30,7 +30,7 @@ public class MemberController {
         try{
             return memberService.singup(dto);
         } catch (Exception e) {
-            return ResponseDto.fail("",e.getMessage());
+            return ResponseDto.fail("FAIL_SIGNUP_ERROR",e.getMessage());
         }
     }
 
@@ -40,7 +40,7 @@ public class MemberController {
         try {
             return memberService.checkId(username);
         } catch (Exception e) {
-            return  ResponseDto.fail("Fail_Duplicate_Error", e.getMessage());
+            return  ResponseDto.fail("FAIL_DUPLICATE_ERROR", e.getMessage());
         }
     }
 
@@ -50,7 +50,7 @@ public class MemberController {
         try {
             return  memberService.login(dto);
         } catch (Exception e) {
-            return ResponseDto.fail("", e.getMessage());
+            return ResponseDto.fail("FAIL_LOGININFO_ERROR", e.getMessage());
         }
 
     }

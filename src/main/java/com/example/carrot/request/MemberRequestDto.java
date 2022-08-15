@@ -8,5 +8,4 @@ public class MemberRequestDto {
     private String username;
     private String nickname;
     private String password;
-    private String passwordConfirm;
 }
