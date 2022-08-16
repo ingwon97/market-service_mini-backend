@@ -1,6 +1,7 @@
 package com.example.carrot.service;
 
 
+import com.example.carrot.model.Member;
 import com.example.carrot.model.MemberDetailsImpl;
 import com.example.carrot.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class MemberDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Can't find " + username));
+
         return new MemberDetailsImpl(member);
     }
 }
