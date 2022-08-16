@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,8 +31,8 @@ public class S3UploaderService {
     @Value("${cloud.aws.s3.bucket}")
     public String bucket;  // S3 버킷 이름
 
-    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
-        File uploadFile = convert(multipartFile)  // 파일 변환할 수 없으면 에러
+    public String upload(String file, String dirName) throws IOException {
+        File uploadFile = convert(file)  // 파일 변환할 수 없으면 에러
                 .orElseThrow(() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
 
         return upload(uploadFile, dirName);
@@ -64,11 +66,12 @@ public class S3UploaderService {
     }
 
     // 로컬에 파일 업로드 하기
-    private Optional<File> convert(MultipartFile file) throws IOException {
-        File convertFile = new File(System.getProperty("user.dir") + "/" + file.getOriginalFilename());
+    private Optional<File> convert(String stringImage) throws IOException {
+        byte[] bytes = decodeBase64(stringImage);
+        File convertFile = new File(System.getProperty("user.dir") + "/" + "tempFile");
         if (convertFile.createNewFile()) { // 바로 위에서 지정한 경로에 File이 생성됨 (경로가 잘못되었다면 생성 불가능)
             try (FileOutputStream fos = new FileOutputStream(convertFile)) { // FileOutputStream 데이터를 파일에 바이트 스트림으로 저장하기 위함
-                fos.write(file.getBytes());
+                fos.write(bytes);
             }
             return Optional.of(convertFile);
         }
@@ -80,4 +83,11 @@ public class S3UploaderService {
     public String getFileUrl(String path) {
         return amazonS3Client.getUrl(bucket, path).toString();
     }
+
+    public byte[] decodeBase64(String encodedFile) {
+        String substring = encodedFile.substring(encodedFile.indexOf(",") + 1);
+        Base64.Decoder decoder = Base64.getDecoder();
+        return decoder.decode(substring);
+    }
+
 }
