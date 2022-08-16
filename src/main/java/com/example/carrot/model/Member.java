@@ -2,11 +2,15 @@ package com.example.carrot.model;
 
 import com.example.carrot.request.MemberRequestDto;
 
+import com.example.carrot.response.MemberResponseDto;
+import com.example.carrot.response.PostResponseDto;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Builder
@@ -54,4 +58,7 @@ public class Member extends Timestamped {
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
+
+
+
 }
