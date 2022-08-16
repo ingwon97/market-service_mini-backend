@@ -38,3 +38,12 @@ out/
 
 ### AWS ###
 aws.yml
+
+# test
+src/test/**
+
+caches/**
+.tmp/**
+daemon/**
+native/**
+wrapper/**
