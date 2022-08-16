@@ -31,6 +31,9 @@ public class Comment extends Timestamped {
         this.content = content;
     }
 
+    public boolean validateMember(Member member) {
+        return !this.member.equals(member);
+    }
     public void update(String content) {
         this.content = content;
     }
