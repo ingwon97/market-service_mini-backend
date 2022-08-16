@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class PostRequestDto {
 
-    private MultipartFile image;
+    private String file;
     private String title;
     private String content;
     private String category;
