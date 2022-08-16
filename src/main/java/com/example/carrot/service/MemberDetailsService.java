@@ -1,7 +1,6 @@
 package com.example.carrot.service;
 
 
-import com.example.carrot.model.Member;
 import com.example.carrot.model.MemberDetailsImpl;
 import com.example.carrot.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

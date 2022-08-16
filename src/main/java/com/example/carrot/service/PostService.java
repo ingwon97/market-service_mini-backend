@@ -2,7 +2,6 @@ package com.example.carrot.service;
 
 import com.example.carrot.image.S3UploaderService;
 import com.example.carrot.jwt.TokenProvider;
-import com.example.carrot.model.Member;
 import com.example.carrot.model.Post;
 import com.example.carrot.repository.MemberRepository;
 import com.example.carrot.repository.PostRepository;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
