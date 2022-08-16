@@ -2,7 +2,6 @@ package com.example.carrot.service;
 
 import com.example.carrot.jwt.TokenProvider;
 import com.example.carrot.model.Comment;
-import com.example.carrot.model.Member;
 import com.example.carrot.model.Post;
 import com.example.carrot.repository.CommentRepository;
 import com.example.carrot.repository.MemberRepository;

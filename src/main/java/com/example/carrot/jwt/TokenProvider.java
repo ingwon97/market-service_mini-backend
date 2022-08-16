@@ -1,6 +1,5 @@
 package com.example.carrot.jwt;
 
-import com.example.carrot.model.Member;
 import com.example.carrot.model.MemberDetailsImpl;
 import com.example.carrot.model.RefreshToken;
 import com.example.carrot.repository.RefreshTokenRepository;
