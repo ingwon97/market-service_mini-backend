@@ -2,6 +2,7 @@ package com.example.carrot.service;
 
 import com.example.carrot.image.S3UploaderService;
 import com.example.carrot.jwt.TokenProvider;
+import com.example.carrot.model.Member;
 import com.example.carrot.model.Post;
 import com.example.carrot.repository.MemberRepository;
 import com.example.carrot.repository.PostRepository;
