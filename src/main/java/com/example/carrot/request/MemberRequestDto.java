@@ -23,7 +23,4 @@ public class MemberRequestDto {
     @Size(min = 4, max = 32)
     @Pattern(regexp = "[a-z\\d]*${3,32}")
     private String password;
-
-    @NotBlank
-    private String passwordConfirm;
 }
