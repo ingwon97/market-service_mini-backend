@@ -1,6 +1,6 @@
 package com.example.carrot.jwt;
 
-import com.example.postapi.controller.response.ResponseDto;
+import com.example.carrot.response.ResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

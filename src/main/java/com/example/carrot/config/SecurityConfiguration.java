@@ -13,11 +13,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -26,44 +30,58 @@ import org.springframework.security.web.SecurityFilterChain;
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class SecurityConfiguration {
 
-  @Value("${jwt.secret}")
-  String SECRET_KEY;
-  private final TokenProvider tokenProvider;
-  private final MemberDetailsService userDetailsService;
-  private final AuthenticationEntryPointException authenticationEntryPointException;
-  private final AccessDeniedHandlerException accessDeniedHandlerException;
+    @Value("${jwt.secret}")
+    String SECRET_KEY;
+    private final TokenProvider tokenProvider;
+    private final MemberDetailsService userDetailsService;
+    private final AuthenticationEntryPointException authenticationEntryPointException;
+    private final AccessDeniedHandlerException accessDeniedHandlerException;
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  @Bean
-  @Order(SecurityProperties.BASIC_AUTH_ORDER)
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.cors();
+    @Bean
+    @Order(SecurityProperties.BASIC_AUTH_ORDER)
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.cors();
 
-    http.csrf().disable()
+        http.csrf().disable()
 
-            .exceptionHandling()
-            .authenticationEntryPoint(authenticationEntryPointException)
-            .accessDeniedHandler(accessDeniedHandlerException)
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPointException)
+                .accessDeniedHandler(accessDeniedHandlerException)
 
-            .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-            .and()
-            .authorizeRequests()
-            .antMatchers("/api/member/**").permitAll()
-            .antMatchers("/api/post/**").permitAll()
-            .antMatchers("/api/comment/**").permitAll()
-            .antMatchers("/api/reply/**").permitAll()
-            .anyRequest().authenticated()
+                .and()
+                .authorizeRequests()
+                .antMatchers("/api/members/**").permitAll()
+                .antMatchers("/api/posts/**").permitAll()
+                .antMatchers("/api/comments/**").permitAll()
+                .anyRequest().authenticated()
 
-            .and()
-            .apply(new JwtSecurityConfiguration(SECRET_KEY, tokenProvider, userDetailsService));
+                .and()
+                .apply(new JwtSecurityConfiguration(SECRET_KEY, tokenProvider, userDetailsService));
 
-    return http.build();
-  }
+        return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.addAllowedOrigin("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
 }
