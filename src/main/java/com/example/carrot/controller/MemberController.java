@@ -37,60 +37,7 @@ public class MemberController {
     ) {
         return memberService.login(requestDto, response);
     }
-
-//  @RequestMapping(value = "/api/auth/member/reissue", method = RequestMethod.POST)
-//  public ResponseDto<?> reissue(HttpServletRequest request, HttpServletResponse response) {
-//    return memberService.reissue(request, response);
-//  }
-
-    @RequestMapping(value = "/api/auth/members/logout", method = RequestMethod.POST)
-    public ResponseDto<?> logout(HttpServletRequest request) {
-        return memberService.logout(request);
-    }
-
-    /*@RequestMapping(value = "/api/auth/member/mypage", method = RequestMethod.GET)
-    public ResponseDto<?> mypage(HttpServletRequest request) {
-        return memberService.mypage(request);
-    }
-
-
-    // 회원가입
-    @PostMapping("/signup")
-    public ResponseDto<?> signup(@RequestBody MemberRequestDto dto) {
-        try{
-            return memberService.createMember(dto);
-        } catch (Exception e) {
-            return ResponseDto.fail("FAIL_SIGNUP_ERROR",e.getMessage());
-        }
-    }
-
-    // 아이디 중복 체크
-    @GetMapping("/check/{username}")
-    public ResponseDto<?> checkId(@PathVariable String username) {
-        try {
-            return memberService.checkId(username);
-        } catch (Exception e) {
-            return  ResponseDto.fail("FAIL_DUPLICATE_ERROR", e.getMessage());
-        }
-    }
-
-    // 로그인
-    @PostMapping("/login")
-    public ResponseDto<?> login(@RequestBody LoginDto dto, HttpServletResponse response ){
-        try {
-            return  memberService.login(dto, response);
-        } catch (Exception e) {
-            return ResponseDto.fail("FAIL_LOGININFO_ERROR", e.getMessage());
-        }
-
-    }
-
-    //로그아웃
-    @GetMapping("/logout")
-    public ResponseDto<?> logout(HttpServletRequest request, HttpServletResponse response) {
-        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-        return ResponseDto.success(null);
-    }
+    /*
 
     //회원 정보 조회
     @GetMapping("/info")
