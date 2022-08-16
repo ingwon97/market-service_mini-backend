@@ -41,16 +41,11 @@ public class PostController {
     // 게시글 수정
     @PutMapping("/api/auth/posts/{postId}")
     public ResponseDto<?> updatePost(@PathVariable Long postId,
-                                     @RequestParam("image") MultipartFile image,
                                      @ModelAttribute PostRequestDto requestDto,
                                      HttpServletRequest request
                                      ) throws IOException {
-        //이미지가 없다면
-        if (image.isEmpty()) {
-            return postService.updatePost(postId, requestDto,request);
-        }
         //이미지가 들어왔다면
-        return postService.updatePost(postId, image, requestDto, request);
+        return postService.updatePost(postId, requestDto, request);
     }
 
     @DeleteMapping("/api/auth/posts/{postId}")

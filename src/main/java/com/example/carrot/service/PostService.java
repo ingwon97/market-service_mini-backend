@@ -91,42 +91,7 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseDto<?> updatePost(Long postId, PostRequestDto requestDto, HttpServletRequest request) {
-
-        if (null == request.getHeader("Refresh-Token")) {
-            return ResponseDto.fail("MEMBER_NOT_FOUND",
-                    "로그인이 필요합니다.");
-        }
-
-        if (null == request.getHeader("Authorization")) {
-            return ResponseDto.fail("MEMBER_NOT_FOUND",
-                    "로그인이 필요합니다.");
-        }
-
-        Member member = validateMember(request);
-        if (null == member) {
-            return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
-        }
-
-        Post post = isPresentPost(postId);
-        if (null == post) {
-            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
-        }
-
-        if (post.validateMember(member)) {
-            return ResponseDto.fail("BAD_REQUEST", "작성자만 수정할 수 있습니다.");
-        }
-
-        if (post == null) {
-            return ResponseDto.fail("POST_NOT_FOUND", "게시글이 존재하지 않습니다");
-        }
-
-        post.update(requestDto);
-        return ResponseDto.success(post);
-    }
-
-    @Transactional
-    public ResponseDto<?> updatePost(Long postId, MultipartFile image, PostRequestDto requestDto, HttpServletRequest request) throws IOException {
+    public ResponseDto<?> updatePost(Long postId, PostRequestDto requestDto, HttpServletRequest request) throws IOException {
 
         // 멤버를 가지고 오기
         if (null == request.getHeader("Refresh-Token")) {
@@ -154,11 +119,13 @@ public class PostService {
         }
 
         String imageUrl = post.getImage_url();
-        String deleteUrl = imageUrl.substring(imageUrl.indexOf("static"));
 
-        s3UploaderService.deleteImage(deleteUrl);
+        if (requestDto.getImage() != null) {
+            String deleteUrl = imageUrl.substring(imageUrl.indexOf("static"));
+            s3UploaderService.deleteImage(deleteUrl);
 
-        imageUrl = s3UploaderService.upload(image, "static");
+            imageUrl = s3UploaderService.upload(requestDto.getImage(), "static");
+        }
 
         post.update(imageUrl, requestDto);
         return ResponseDto.success(post);
