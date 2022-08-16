@@ -16,9 +16,4 @@ public class PostRequestDto {
     private String category;
     private Long price;
 
-    public PostRequestDto(String title, String content, Long price) {
-        this.title = title;
-        this.content = content;
-        this.price = price;
-    }
 }
