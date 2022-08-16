@@ -35,12 +35,8 @@ public class MemberService {
   @Transactional
   public ResponseDto<?> createMember(MemberRequestDto requestDto) {
     if (null != isPresentMember(requestDto.getUsername())) {
-      return ResponseDto.fail("DUPLICATED_NICKNAME",
-          "중복된 닉네임 입니다.");
-    }
-    if (!requestDto.getPassword().equals(requestDto.getPasswordConfirm())) {
-      return ResponseDto.fail("PASSWORDS_NOT_MATCHED",
-          "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+      return ResponseDto.fail("DUPLICATED_USERNAME",
+          "중복된 아이디 입니다.");
     }
 
     Member member = Member.builder()
