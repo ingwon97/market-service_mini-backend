@@ -6,6 +6,7 @@ import com.example.carrot.response.ResponseDto;
 import com.example.carrot.service.PostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class PostController {
@@ -25,11 +27,10 @@ public class PostController {
     }
 
     @PostMapping("/api/auth/posts")
-    public ResponseDto<?> createPost(@RequestParam("image") MultipartFile image,
-                                     @ModelAttribute PostRequestDto requestDto,
+    public ResponseDto<?> createPost(@RequestBody PostRequestDto requestDto,
                                      HttpServletRequest request
                                      ) throws IOException {
-        return postService.createPost(image, requestDto, request);
+        return postService.createPost(requestDto, request);
     }
 
     // 게시글 조회
@@ -41,7 +42,7 @@ public class PostController {
     // 게시글 수정
     @PutMapping("/api/auth/posts/{postId}")
     public ResponseDto<?> updatePost(@PathVariable Long postId,
-                                     @ModelAttribute PostRequestDto requestDto,
+                                     @RequestBody PostRequestDto requestDto,
                                      HttpServletRequest request
                                      ) throws IOException {
         //이미지가 들어왔다면

@@ -48,7 +48,7 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseDto<?> createPost(MultipartFile image, PostRequestDto requestDto, HttpServletRequest request) throws IOException {
+    public ResponseDto<?> createPost(PostRequestDto requestDto, HttpServletRequest request) throws IOException {
 
         if (null == request.getHeader("Refresh-Token")) {
             return ResponseDto.fail("MEMBER_NOT_FOUND",
@@ -66,7 +66,7 @@ public class PostService {
         }
 
         // 멤버를 가지고, 게시글 만들기
-        String imageUrl = s3UploaderService.upload(image, "static");
+        String imageUrl = s3UploaderService.upload(requestDto.getFile(), "static");
 
         Post post = Post.builder()
                 .member(member)
@@ -118,11 +118,11 @@ public class PostService {
 
         String imageUrl = post.getImage_url();
 
-        if (requestDto.getImage() != null) {
+        if (requestDto.getFile() != null) {
             String deleteUrl = imageUrl.substring(imageUrl.indexOf("static"));
             s3UploaderService.deleteImage(deleteUrl);
 
-            imageUrl = s3UploaderService.upload(requestDto.getImage(), "static");
+            imageUrl = s3UploaderService.upload(requestDto.getFile(), "static");
         }
 
         post.update(imageUrl, requestDto);
