@@ -112,18 +112,23 @@ public class MemberService {
       return ResponseDto.fail("MEMBER_NOT_FOUND",
               "로그인이 필요합니다.");
     }
+
     if (null == request.getHeader("Authorization")) {
       return ResponseDto.fail("MEMBER_NOT_FOUND",
               "로그인이 필요합니다.");
     }
+
     Member member = validateMember(request);
     if (null == member) {
       return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
     }
+
     List<Post> postsByMember = postRepository.findAllByMember(member);
     List<Comment> commentsByMember = commentRepository.findAllByMember(member);
+
     // 좋아요한 자료들
     List<PostHeart> heartsByMember = postHeartRepository.findAllByMember(member);
+
     return ResponseDto.success(
             MypageResponseDto.builder()
                     .posts(postsByMember)
