@@ -17,6 +17,7 @@ public class PostResponseDto {
     private String content;
     private String imageUrl;
     private String category;
+    private List<Bookmark> bookmarks;
 
     private Long price;
     // 작성자 추가해줘야 되는거 아닌가?

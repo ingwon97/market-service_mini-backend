@@ -7,6 +7,7 @@ import com.example.carrot.model.Post;
 import com.example.carrot.repository.CommentRepository;
 import com.example.carrot.repository.MemberRepository;
 import com.example.carrot.repository.PostRepository;
+import com.example.carrot.response.CommentRequestDto;
 import com.example.carrot.response.CommentResponseDto;
 import com.example.carrot.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class CommentService {
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public ResponseDto<?> createComment(Long postId, String content, HttpServletRequest request) {
+    public ResponseDto<?> createComment(Long postId, CommentRequestDto requestDto, HttpServletRequest request) {
 
         if (null == request.getHeader("Refresh-Token")) {
             return ResponseDto.fail("MEMBER_NOT_FOUND",
@@ -51,7 +52,7 @@ public class CommentService {
             return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
         }
 
-        Comment comment = new Comment(post, member, content);
+        Comment comment = new Comment(post, member, requestDto.getContent());
         Comment savedComment = commentRepository.save(comment);
         return ResponseDto.success(new CommentResponseDto(savedComment));
     }
@@ -78,7 +79,7 @@ public class CommentService {
     }
 
     @Transactional
-    public ResponseDto<?> updateComment(Long commentId, String content, HttpServletRequest request) {
+    public ResponseDto<?> updateComment(Long commentId, CommentRequestDto requestDto, HttpServletRequest request) {
         if (null == request.getHeader("Refresh-Token")) {
             return ResponseDto.fail("MEMBER_NOT_FOUND",
                     "로그인이 필요합니다.");
@@ -106,7 +107,7 @@ public class CommentService {
 
         validateAuthor(member, comment);
 
-        comment.update(content);
+        comment.update(requestDto.getContent());
         return ResponseDto.success(comment);
     }
 

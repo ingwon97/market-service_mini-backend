@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.print.Book;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +47,7 @@ public class PostService {
                         .id(post.getId())
                         .title(post.getTitle())
                         .content(post.getContent())
+                        .bookmarks(post.getBookmark())
                         .nickname(post.getNickname())
                         .imageUrl(post.getImage_url())
                         .category(post.getCategory())
@@ -203,6 +205,25 @@ public class PostService {
         List<Post> allPostsByCategory = postRepository.findAllByCategory(category);
         return ResponseDto.success(allPostsByCategory);
     }
+
+ /*   public ResponseDto<?> getPostsByBookmark(HttpServletRequest request) {
+        if (null == request.getHeader("Refresh-Token")) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "로그인이 필요합니다.");
+        }
+
+        if (null == request.getHeader("Authorization")) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "로그인이 필요합니다.");
+        }
+
+        Member member = validateMember(request);
+        if (null == member) {
+            return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
+        }
+        // 북마크 중,
+        List<Bookmark> bookmarks = bookmarkRepository.findAllByMember(member);
+    }*/
 
     @Transactional
     public ResponseDto<?> flagBookmark(Long postId, String username) {

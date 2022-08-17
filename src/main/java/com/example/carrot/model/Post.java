@@ -3,6 +3,7 @@ package com.example.carrot.model;
 import com.example.carrot.request.PostRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.springframework.data.util.Lazy;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -34,6 +35,9 @@ public class Post extends Timestamped {
 
     @Column
     private String category;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    private List<Bookmark> bookmark;
 
     @Column
     private String image_url;

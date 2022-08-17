@@ -1,5 +1,6 @@
 package com.example.carrot.controller;
 
+import com.example.carrot.response.CommentRequestDto;
 import com.example.carrot.response.ResponseDto;
 import com.example.carrot.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +18,9 @@ public class CommentController {
 
     @PostMapping("/api/auth/comments/{postId}")
     public ResponseDto<?> createComment(@PathVariable Long postId,
-                                        @RequestParam String content,
+                                        @RequestBody CommentRequestDto requestDto,
                                         HttpServletRequest request) {
-        return commentService.createComment(postId, content, request);
+        return commentService.createComment(postId, requestDto, request);
     }
 
     @GetMapping("/api/comments/{postId}")
@@ -29,14 +30,13 @@ public class CommentController {
 
     @PutMapping("/api/auth/comments/{commentId}")
     public ResponseDto<?> updateComment(@PathVariable Long commentId,
-                                        @RequestParam String content,
+                                        @RequestBody CommentRequestDto requestDto,
                                         HttpServletRequest request) {
-        return commentService.updateComment(commentId, content, request);
+        return commentService.updateComment(commentId, requestDto, request);
     }
 
     @DeleteMapping("/api/auth/comments/{commentId}")
     public ResponseDto<?> deleteComment(@PathVariable Long commentId,
-                                        @AuthenticationPrincipal UserDetails details,
                                         HttpServletRequest request) {
         return commentService.deleteComment(commentId, request);
     }

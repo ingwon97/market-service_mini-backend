@@ -1,5 +1,6 @@
 package com.example.carrot.repository;
 
+import com.example.carrot.model.Bookmark;
 import com.example.carrot.model.Member;
 import com.example.carrot.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,5 +17,7 @@ public interface PostRepository extends JpaRepository<Post, Long>{
     List<Post> findAllByCategory(String category);
 
     List<Post> findAllByMember(Member member);
+
+    List<Post> findAllByMemberAndBookmark(Member member, Bookmark bookmark);
 
 }
