@@ -22,15 +22,4 @@ public class MypagePostResponseDto {
 //    public MypageResponsePostDto(Member member) {
 //        this.id = member.getMember_id();
 //    }
-
-
-
-
-
-
-
-
-
-
-
 }

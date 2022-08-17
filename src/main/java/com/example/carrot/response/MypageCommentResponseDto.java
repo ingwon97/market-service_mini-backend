@@ -20,8 +20,4 @@ public class MypageCommentResponseDto {
 //        this.createdAt = member.getCreatedAt();
 //        this.modifiedAt = member.getModifiedAt();
 //    }
-
-
-
-
 }
