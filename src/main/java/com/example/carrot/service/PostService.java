@@ -13,6 +13,8 @@ import com.example.carrot.response.BookmarkResponseDto;
 import com.example.carrot.response.PostResponseDto;
 import com.example.carrot.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.print.Book;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,9 +95,50 @@ public class PostService {
         return ResponseDto.success(post);
     }
 
-    public ResponseDto<?> getAllPosts() {
+    public ResponseDto<?> getAllPosts(UserDetails userInfo) {
         List<Post> posts = postRepository.findAll();
-        return ResponseDto.success(posts);
+        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
+
+        for(Post post : posts) {
+            postResponseDtoList.add(PostResponseDto.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .imageUrl(post.getImage_url())
+                    .category(post.getCategory())
+                    .price(post.getPrice())
+                    .nickname(post.getNickname())
+                    .modifiedAt(post.getModifiedAt())
+                    .createdAt(post.getCreatedAt())
+                    .flag(false)
+                    .build()
+            );
+        }
+
+        if(userInfo == null) {
+
+            return ResponseDto.success(postResponseDtoList);
+
+        } else {
+            Member member = memberRepository.findByUsername(userInfo.getUsername()).orElse(null);
+            List<Bookmark> bookmarkList = bookmarkRepository.findAllByMember(member);
+
+            for(Bookmark bookmark: bookmarkList) {
+                for(PostResponseDto dto : postResponseDtoList) {
+                    if(bookmark.getPost().getId() == dto.getId()) {
+                        dto.setFlag(true);
+                        break;
+                    }
+                }
+            }
+
+            return ResponseDto.success(postResponseDtoList);
+
+
+        }
+
+
+
     }
 
     @Transactional

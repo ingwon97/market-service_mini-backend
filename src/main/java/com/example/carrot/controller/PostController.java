@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,8 +36,8 @@ public class PostController {
 
     // 게시글 조회
     @GetMapping("/api/posts")
-    public ResponseDto<?> getAllPosts() {
-        return postService.getAllPosts();
+    public ResponseDto<?> getAllPosts(@AuthenticationPrincipal UserDetails userInfo) {
+        return postService.getAllPosts(userInfo);
     }
 
     // 게시글 수정
