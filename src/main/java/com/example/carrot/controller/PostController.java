@@ -69,5 +69,10 @@ public class PostController {
         return postService.addPostCategory(category);
     }*/
 
+    @PostMapping("/api/posts/bookmark/{postId}/{username}")
+    public ResponseDto<?> flagBookmark(@PathVariable Long postId, @PathVariable String username) {
+        return postService.flagBookmark(postId, username);
+    }
+
 
 }

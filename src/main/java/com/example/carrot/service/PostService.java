@@ -2,16 +2,20 @@ package com.example.carrot.service;
 
 import com.example.carrot.image.S3UploaderService;
 import com.example.carrot.jwt.TokenProvider;
+import com.example.carrot.model.Bookmark;
 import com.example.carrot.model.Member;
 import com.example.carrot.model.Post;
+import com.example.carrot.repository.BookmarkRepository;
 import com.example.carrot.repository.MemberRepository;
 import com.example.carrot.repository.PostRepository;
 import com.example.carrot.request.PostRequestDto;
+import com.example.carrot.response.BookmarkResponseDto;
 import com.example.carrot.response.PostResponseDto;
 import com.example.carrot.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +32,7 @@ public class PostService {
     private final S3UploaderService s3UploaderService;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
+    private final BookmarkRepository bookmarkRepository;
 
 
     public ResponseDto<?> getPostById(Long postId) {
@@ -197,5 +202,33 @@ public class PostService {
 
         List<Post> allPostsByCategory = postRepository.findAllByCategory(category);
         return ResponseDto.success(allPostsByCategory);
+    }
+
+    @Transactional
+    public ResponseDto<?> flagBookmark(Long postId, String username) {
+        Post post = postRepository.findById(postId).orElse(null);
+        Member member = memberRepository.findByUsername(username).orElse(null);
+        if(post == null) {
+            return ResponseDto.fail("NOT_EXIST_POST", "존재하지 않는 게시글입니다.");
+        }
+        if(member == null) {
+            return ResponseDto.fail("NOT_EXIST_Member", "존재하지 않는 회원입니다.");
+        }
+
+        Bookmark bookmark = bookmarkRepository.findByPostAndMember(post, member).orElse(null);
+        String state = "";
+
+        if(bookmark == null) {
+            bookmark = new Bookmark(post,member);
+            bookmarkRepository.save(bookmark);
+            state = "북마크 추가";
+        } else {
+           bookmarkRepository.deleteByPostAndMember(post,member);
+            state = "북마크 삭제";
+        }
+
+        BookmarkResponseDto bookmarkResponseDto = new BookmarkResponseDto(bookmark, state);
+
+        return ResponseDto.success(bookmarkResponseDto) ;
     }
 }
