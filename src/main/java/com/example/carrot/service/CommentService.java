@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class CommentService {
 
@@ -26,7 +27,6 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
-    @Transactional
     public ResponseDto<?> createComment(Long postId, CommentRequestDto requestDto, UserDetails userDetails) {
         Member member = getMember(userDetails);
         Post post = getPost(postId);
@@ -35,6 +35,7 @@ public class CommentService {
         return ResponseDto.success(new CommentResponseDto(savedComment));
     }
 
+    @Transactional(readOnly = true)
     public ResponseDto<?> findAllComment(Long postId) {
         Post post = getPost(postId);
         List<CommentResponseDto> responseDtoList =
@@ -42,7 +43,6 @@ public class CommentService {
         return ResponseDto.success(responseDtoList);
     }
 
-    @Transactional
     public ResponseDto<?> updateComment(Long commentId, CommentRequestDto requestDto, UserDetails userDetails) {
         Member member = getMember(userDetails);
         Comment findComment = getComment(commentId);
@@ -51,7 +51,6 @@ public class CommentService {
         return ResponseDto.success(new CommentResponseDto(findComment));
     }
 
-    @Transactional
     public ResponseDto<?> deleteComment(Long commentId, UserDetails details) {
         Member member = getMember(details);
         Comment findComment = getComment(commentId);

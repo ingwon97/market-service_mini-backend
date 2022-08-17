@@ -1,8 +1,6 @@
 package com.example.carrot.response;
 
 import com.example.carrot.model.Bookmark;
-import com.example.carrot.model.Post;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 

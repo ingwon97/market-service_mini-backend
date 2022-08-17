@@ -13,16 +13,11 @@ import com.example.carrot.response.BookmarkResponseDto;
 import com.example.carrot.response.PostResponseDto;
 import com.example.carrot.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.awt.print.Book;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
