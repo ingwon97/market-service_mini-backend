@@ -146,7 +146,7 @@ public class MypageService {
 
         // 멤버를 가지고, 게시글 만들기
         String imageUrl = s3UploaderService.upload(requestDto.getFile(), "static");
-
+        System.out.println(imageUrl);
         Mypage mypage = Mypage.builder()
                 .image_url(imageUrl)
                 .build();

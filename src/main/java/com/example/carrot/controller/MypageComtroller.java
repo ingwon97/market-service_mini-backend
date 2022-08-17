@@ -48,14 +48,23 @@ public class MypageComtroller {
     }
 
     @PutMapping("/api/auth/mypage/images")
-    public ResponseDto<?> updatePost(
+    public ResponseDto<?> updatePost(@AuthenticationPrincipal MemberDetailsImpl memberDetails,
                                      @RequestBody MypageRequestDto requestDto,
                                      HttpServletRequest request
     ) throws IOException {
-        RequestToken requestToken = new RequestToken(request);
+        Long memberId = memberDetails.getUser().getMember_id();
+
 
         //이미지가 들어왔다면
-        return mypageService.updateImage(requestDto, request);
+        return mypageService.updateImage(memberId, requestDto, request);
     }
+
+//    @RequestMapping(value = "/api/mypage/comments", method = RequestMethod.GET)
+//    public ResponseDto<?> mypageComment(@AuthenticationPrincipal MemberDetailsImpl memberDetails
+//    ) {
+//        Long memberId = memberDetails.getUser().getMember_id();
+//
+//        return mypageService.mypageAllComment(memberId);
+//    }
 
 }
