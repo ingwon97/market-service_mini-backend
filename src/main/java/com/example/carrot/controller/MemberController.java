@@ -39,14 +39,13 @@ public class MemberController {
     }
 
     // 아이디 중복 체크
-    @GetMapping("/check/{username}")
+    @GetMapping("/api/members/check/{username}")
     public ResponseDto<?> checkId(@PathVariable String username) {
         return memberService.checkId(username);
     }
 
-    /*
     //회원 정보 조회
-    @GetMapping("/info")
+    @GetMapping("/api/members/info")
     public ResponseDto<?> LoginInfo(@AuthenticationPrincipal UserDetails userInfo) {
         try {
             return  memberService.LoginInfo(userInfo);
@@ -55,7 +54,7 @@ public class MemberController {
         }
 
 
-    }*/
+    }
 
 }
 
