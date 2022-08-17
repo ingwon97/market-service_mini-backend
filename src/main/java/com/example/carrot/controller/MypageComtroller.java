@@ -1,6 +1,7 @@
 package com.example.carrot.controller;
 
 import com.example.carrot.model.MemberDetailsImpl;
+import com.example.carrot.request.MypageRequestDto;
 import com.example.carrot.request.PostRequestDto;
 import com.example.carrot.response.ResponseDto;
 import com.example.carrot.service.MypageService;
@@ -37,6 +38,24 @@ public class MypageComtroller {
     @RequestMapping(value = "/api/auth/mypage/bookmarks", method = RequestMethod.GET)
     public ResponseDto<?> mypageBookmark(HttpServletRequest request) {
         return mypageService.mypageAllBookmark(request);
+    }
+
+    @PostMapping("/api/auth/mypage/images")
+    public ResponseDto<?> createImage(@RequestBody MypageRequestDto requestDto,
+                                     HttpServletRequest request
+    ) throws IOException {
+        return mypageService.createImage(requestDto, request);
+    }
+
+    @PutMapping("/api/auth/mypage/images")
+    public ResponseDto<?> updatePost(
+                                     @RequestBody MypageRequestDto requestDto,
+                                     HttpServletRequest request
+    ) throws IOException {
+        RequestToken requestToken = new RequestToken(request);
+
+        //이미지가 들어왔다면
+        return mypageService.updateImage(requestDto, request);
     }
 
 }
