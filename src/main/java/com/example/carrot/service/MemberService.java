@@ -8,9 +8,11 @@ import com.example.carrot.repository.PostRepository;
 import com.example.carrot.request.LoginRequestDto;
 import com.example.carrot.request.MemberRequestDto;
 import com.example.carrot.request.TokenDto;
+import com.example.carrot.response.MemberInfoResponseDto;
 import com.example.carrot.response.MemberResponseDto;
 import com.example.carrot.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -158,5 +160,18 @@ public class MemberService {
     return ResponseDto.success(username);
   }
 
+  public ResponseDto<?> LoginInfo(UserDetails userInfo) {
+    Member member = memberRepository.findByUsername(userInfo.getUsername()).orElseThrow(
+            () -> new IllegalArgumentException("로그인 상태가 아닙니다.")
+    );
+
+    MemberInfoResponseDto memberInfoResponseDto = MemberInfoResponseDto.builder()
+            .username(member.getUsername())
+            .nickname(member.getNickname())
+            .build();
+
+    return ResponseDto.success(memberInfoResponseDto);
+
+  }
 
 }
