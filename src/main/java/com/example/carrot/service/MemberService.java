@@ -148,4 +148,15 @@ public class MemberService {
     }
     return tokenProvider.getMemberFromAuthentication();
   }
+
+  public ResponseDto<?> checkId(String username) {
+    Member member = memberRepository.findByUsername(username).orElse(null);
+
+    if(member != null) {
+      return ResponseDto.fail("FAIL_ID_DUPLICATE","아이디가 중복됩니다.");
+    }
+    return ResponseDto.success(username);
+  }
+
+
 }
