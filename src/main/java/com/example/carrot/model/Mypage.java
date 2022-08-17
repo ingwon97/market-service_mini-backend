@@ -24,7 +24,7 @@ public class Mypage {
 
     @JsonIgnore
     @JoinColumn(name = "member_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private Member member;
 
     public void update(String image_url, MypageRequestDto requestDto) {

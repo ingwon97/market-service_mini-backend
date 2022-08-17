@@ -149,10 +149,11 @@ public class MypageService {
         System.out.println(imageUrl);
         Mypage mypage = Mypage.builder()
                 .image_url(imageUrl)
+                .member(member)
                 .build();
 
         mypageRepository.save(mypage);
-
+        //Debug : Cannot find local variable s3UploaderService
         return ResponseDto.success(mypage);
     }
 
