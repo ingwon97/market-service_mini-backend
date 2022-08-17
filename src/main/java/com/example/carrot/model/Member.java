@@ -22,7 +22,6 @@ public class Member extends Timestamped {
     private Long member_id;
 
     @Column(nullable = false, unique = true)
-
     private String username;
 
     @Column(nullable = false)
