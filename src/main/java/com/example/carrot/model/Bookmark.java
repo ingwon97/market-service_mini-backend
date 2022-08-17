@@ -19,4 +19,8 @@ public class Bookmark {
     @ManyToOne(fetch = FetchType.LAZY)
     private Bookmark bookmark;
 
+    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
+
 }

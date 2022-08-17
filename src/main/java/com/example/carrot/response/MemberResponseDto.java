@@ -2,19 +2,16 @@ package com.example.carrot.response;
 
 
 import com.example.carrot.model.Member;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@Builder
 @Getter
-@AllArgsConstructor
 public class MemberResponseDto {
 
-    private Long id;
+
     private String username;
     private String nickname;
     private String profile;
