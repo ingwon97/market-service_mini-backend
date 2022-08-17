@@ -62,6 +62,13 @@ public class MemberController {
         return ResponseDto.success(null);
     }
 
+    // 아이디 중복 체크
+    @GetMapping("/check/{username}")
+    public ResponseDto<?> checkId(@PathVariable String username) {
+        return memberService.checkId(username);
+    }
+
+    /*
     //회원 정보 조회
     @GetMapping("/info")
     public ResponseDto<?> LoginInfo(@AuthenticationPrincipal UserDetails userInfo) {
