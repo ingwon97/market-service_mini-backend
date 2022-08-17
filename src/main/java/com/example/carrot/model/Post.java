@@ -3,7 +3,6 @@ package com.example.carrot.model;
 import com.example.carrot.request.PostRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.springframework.data.util.Lazy;
 
 import javax.persistence.*;
 import java.util.ArrayList;
