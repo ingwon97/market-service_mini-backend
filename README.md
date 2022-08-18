@@ -2,12 +2,14 @@
 
 - 사용하지 않는 물건을 공유하는 사이트
 
-* [](https://)
+* [당근 나라](https://carrotcountry.netlify.app/)
 
 ### 🥕 당근 나라 🥕
 
-메인 이미지
-![](.png)
+메인 화면
+![image](https://user-images.githubusercontent.com/74712195/185373766-2e0e8348-c5c2-465c-8842-305f2bf793c6.png)
+게시글 상세 화면
+![image](https://user-images.githubusercontent.com/74712195/185374593-db41d8f7-8b0b-45c7-a247-16db7ea4d1cc.png)
 
 ### 📆 프로젝트 기간
 
@@ -66,5 +68,5 @@ https://angry-pail-4f3.notion.site/3f7ac5e6ad8c4a4fa61665c36a0f8ce4?v=abf7217546
 
 | 이름 |         깃허브 주소         |  역할  |
 |:--:| :-------------------------: |:----:|
-| 류현 | https://github.com/ | [팀원] |
-| 정민희 | https://github.com/ | [팀원] |
+| 류현 | https://github.com/LuisKlopp | [팀원] |
+| 정민희 | https://github.com/minimi61 | [팀원] |
