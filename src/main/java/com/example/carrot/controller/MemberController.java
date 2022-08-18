@@ -1,25 +1,20 @@
 package com.example.carrot.controller;
 
-import com.example.carrot.request.LoginDto;
 import com.example.carrot.request.LoginRequestDto;
 import com.example.carrot.request.MemberRequestDto;
 import com.example.carrot.response.ResponseDto;
 import com.example.carrot.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 
 @RequiredArgsConstructor
 @RestController
-//@RequestMapping("/api/members")
 public class MemberController {
 
     private final MemberService memberService;

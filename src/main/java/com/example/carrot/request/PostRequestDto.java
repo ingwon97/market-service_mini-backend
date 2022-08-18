@@ -1,7 +1,6 @@
 package com.example.carrot.request;
 
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Builder
