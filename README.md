@@ -8,7 +8,7 @@
 ### 🥕 당근 나라 🥕
 
 메인 화면
-![image](https://user-images.githubusercontent.com/74712195/185373766-2e0e8348-c5c2-465c-8842-305f2bf793c6.png)
+<img width="1217" alt="main" src="https://user-images.githubusercontent.com/80199125/185464613-197b507c-5970-4b0b-90f9-01aa85257e2a.png">
 게시글 상세 화면
 ![image](https://user-images.githubusercontent.com/74712195/185374593-db41d8f7-8b0b-45c7-a247-16db7ea4d1cc.png)
 
