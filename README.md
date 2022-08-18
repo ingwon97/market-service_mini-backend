@@ -11,6 +11,14 @@
 게시글 상세 화면
 ![image](https://user-images.githubusercontent.com/74712195/185374593-db41d8f7-8b0b-45c7-a247-16db7ea4d1cc.png)
 
+### 와이어프레임
+----------------------------------------------------
+![image](https://github.com/minimi61/week-6-mini-react/blob/mini/%EC%99%80%EC%9D%B4%EC%96%B4%ED%94%84%EB%A0%88%EC%9E%841.png)
+![image](https://github.com/minimi61/week-6-mini-react/blob/mini/%EC%99%80%EC%9D%B4%EC%96%B4%ED%94%84%EB%A0%88%EC%9E%842.png)
+<br/>
+<br/>
+<br/>
+
 ### 📆 프로젝트 기간
 
 - 2022/08/12 ~ 2022/08/18
