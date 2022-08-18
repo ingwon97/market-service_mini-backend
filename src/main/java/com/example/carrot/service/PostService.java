@@ -125,7 +125,7 @@ public class PostService {
 
             for(Bookmark bookmark: bookmarkList) {
                 for(PostResponseDto dto : postResponseDtoList) {
-                    if(bookmark.getPost().getId() == dto.getId()) {
+                    if(bookmark.getPost().getId().equals(dto.getId())  ) {
                         dto.setFlag(true);
                         break;
                     }
