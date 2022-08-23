@@ -3,7 +3,11 @@
 - 사용하지 않는 물건을 공유하는 사이트
 
 * [당근 나라](https://carrotcountry.netlify.app/)
-* [시현 영상](https://www.youtube.com/watch?v=hZqWDskzucQ)
+* [시연 영상](https://www.youtube.com/watch?v=hZqWDskzucQ)
+
+
+https://user-images.githubusercontent.com/80199125/186281425-ae50c122-9fac-4e76-8f2e-7bcfa66844be.mp4
+
 
 ### 🥕 당근 나라 🥕
 
